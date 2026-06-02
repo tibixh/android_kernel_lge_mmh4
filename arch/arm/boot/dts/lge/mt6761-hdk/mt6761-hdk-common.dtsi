@@ -1,0 +1,79 @@
+/*
+ * LG Electronics MT6761 HDK common device tree source
+ *
+ * Copyright (c) 2018 LG Electronics Co., Ltd.
+ *              http://www.lge.com
+ *
+ */
+
+/* CONSYS GPIO standardization */
+&pio {
+	consys_pins_default: consys_default {
+	};
+	gpslna_pins_init: gpslna@0 {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO52__FUNC_GPIO52>;
+			slew-rate = <0>;
+			bias-disable;
+			output-low;
+		};
+	};
+	gpslna_pins_oh: gpslna@1 {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO52__FUNC_GPIO52>;
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+	gpslna_pins_ol: gpslna@2 {
+		pins_cmd_dat {
+			pinmux = <PINMUX_GPIO52__FUNC_GPIO52>;
+			slew-rate = <1>;
+			output-low;
+		};
+	};
+};
+&consys {
+	pinctrl-names = "default", "gps_lna_state_init",
+		"gps_lna_state_oh", "gps_lna_state_ol";
+	pinctrl-0 = <&consys_pins_default>;
+	pinctrl-1 = <&gpslna_pins_init>;
+	pinctrl-2 = <&gpslna_pins_oh>;
+	pinctrl-3 = <&gpslna_pins_ol>;
+	status = "okay";
+};
+/* CONSYS end */
+
+&reserved_memory {
+	#address-cells = <2>;
+	#size-cells = <2>;
+	smembackup-reserved-memory@54650000 {
+		compatible = "lge,smembackup";
+		reg = <0 0x54650000 0 0x12000>;
+	};
+
+	atfbackup-reserved-memory@54662000 {
+		compatible = "lge,atfbackup";
+		reg = <0 0x54662000 0 0x50000>;
+	};
+
+	atflogbackup-reserved-memory@546b2000 {
+		compatible = "lge,atflogbackup";
+		reg = <0 0x546b2000 0 0x40000>;
+	};
+
+	preloader-reserved-memory@54800000 {
+		compatible = "mediatek,preloader";
+		reg = <0 0x54800000 0 0x100000>;
+	};
+
+	lk-reserved-memory@56000000 {
+		compatible = "mediatek,lk";
+		reg = <0 0x56000000 0 0x400000>;
+	};
+};
+
+&msdc1 {
+	cd-gpios = <&pio 56 0>;
+	cd_level = /bits/ 8 <1>;
+};
